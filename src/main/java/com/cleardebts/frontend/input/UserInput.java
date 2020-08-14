@@ -6,8 +6,6 @@ public class UserInput {
 
 	private String lastName;
 
-	private String userId;
-
 	private String password;
 
 	private String contactNumber;
@@ -34,14 +32,6 @@ public class UserInput {
 
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
-	}
-
-	public String getUserId() {
-		return userId;
-	}
-
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 
 	public String getPassword() {
