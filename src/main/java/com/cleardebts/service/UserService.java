@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.cleardebts.exception.ClearDebtsException;
 import com.cleardebts.exception.RecordNotFoundException;
 import com.cleardebts.frontend.input.UserInput;
+import com.cleardebts.frontend.output.UserOutputData;
 import com.cleardebts.frontend.output.UserRegistrationOutput;
 import com.cleardebts.model.User;
 import com.cleardebts.repository.UserRepository;
@@ -79,6 +80,26 @@ public class UserService {
 		}
 
 		return mapModelToUserInput(user);
+	}
+
+	public UserOutputData getUserByUserName(final String userName) throws RecordNotFoundException {
+
+		User user = userRepository.getUserByContactAndEmail(userName, userName);
+
+		if (user == null) {
+			throw new RecordNotFoundException("User not found exception");
+		}
+
+		UserOutputData data = new UserOutputData();
+		data.setFirstName(user.getFirstName());
+		data.setLastName(user.getLastName());
+		data.setContactNumber(user.getContactNumber());
+		data.setEmail(user.getEmail());
+		data.setCity(user.getCity());
+		data.setCountry(user.getCountry());
+		data.setOsVersion(user.getOsVersion());
+
+		return data;
 	}
 
 	public UserInput mapModelToUserInput(User user) {
