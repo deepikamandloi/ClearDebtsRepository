@@ -1,8 +1,10 @@
 package com.cleardebts.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.cleardebts.exception.ClearDebtsException;
 import com.cleardebts.exception.RecordNotFoundException;
 import com.cleardebts.frontend.input.UserInput;
 import com.cleardebts.frontend.output.UserRegistrationOutput;
@@ -15,12 +17,13 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 
-	public UserRegistrationOutput registerUser(UserInput userInput) {
+	public UserRegistrationOutput registerUser(UserInput userInput) throws ClearDebtsException {
 
 		UserRegistrationOutput registrationOutput = new UserRegistrationOutput();
 
 		try {
 			// TODO - If user exist with the user id or contact number or email id
+			validateContactAndEmailDetails(userInput.getContactNumber(), userInput.getEmail());
 
 			// validate all the fields like email, user id etc
 
@@ -32,12 +35,24 @@ public class UserService {
 			registrationOutput.setMessage("User saved successfully");
 
 			// TODO Handle excepion for all the cases
+		} catch (ClearDebtsException cde) {
+			throw cde;
 		} catch (Exception exception) {
 			registrationOutput.setSuccess(false);
 			registrationOutput.setMessage("Problem occured during save operation");
 		}
 
 		return registrationOutput;
+	}
+
+	private void validateContactAndEmailDetails(final String contactNumber, final String email)
+			throws ClearDebtsException {
+
+		User user = userRepository.getUserByContactAndEmail(contactNumber, email);
+
+		if (user != null)
+			throw new ClearDebtsException("User already exist", HttpStatus.CONFLICT.value());
+
 	}
 
 	public User mapUserInputToModel(UserInput userInput) {
