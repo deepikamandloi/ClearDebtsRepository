@@ -2,54 +2,33 @@ package com.cleardebts.frontend.output;
 
 public class UserRegistrationOutput {
 
-	private Long id;
+	private UserRegistrationOutputData data = new UserRegistrationOutputData();
 
-	private Long successCode;
+	Boolean success;
+	String message;
 
-	private String successMessage;
-
-	private Long errorCode;
-
-	private String errorMessage;
-
-	public Long getId() {
-		return id;
+	public UserRegistrationOutputData getData() {
+		return data;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setData(UserRegistrationOutputData data) {
+		this.data = data;
 	}
 
-	public Long getSuccessCode() {
-		return successCode;
+	public Boolean getSuccess() {
+		return success;
 	}
 
-	public void setSuccessCode(Long successCode) {
-		this.successCode = successCode;
+	public void setSuccess(Boolean success) {
+		this.success = success;
 	}
 
-	public String getSuccessMessage() {
-		return successMessage;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setSuccessMessage(String successMessage) {
-		this.successMessage = successMessage;
-	}
-
-	public Long getErrorCode() {
-		return errorCode;
-	}
-
-	public void setErrorCode(Long errorCode) {
-		this.errorCode = errorCode;
-	}
-
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 }

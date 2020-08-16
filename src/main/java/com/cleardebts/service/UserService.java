@@ -8,7 +8,6 @@ import com.cleardebts.frontend.input.UserInput;
 import com.cleardebts.frontend.output.UserRegistrationOutput;
 import com.cleardebts.model.User;
 import com.cleardebts.repository.UserRepository;
-import com.cleardebts.util.ErrorCodes;
 
 @Service
 public class UserService {
@@ -28,14 +27,14 @@ public class UserService {
 			User user = mapUserInputToModel(userInput);
 			user = userRepository.save(user);
 
-			registrationOutput.setId(user.getId());
-			registrationOutput.setSuccessCode(ErrorCodes.SUCCESS_CODE);
-			registrationOutput.setSuccessMessage("User saved successfully");
+			registrationOutput.getData().setId(user.getId());
+			registrationOutput.setSuccess(true);
+			registrationOutput.setMessage("User saved successfully");
 
 			// TODO Handle excepion for all the cases
 		} catch (Exception exception) {
-			registrationOutput.setErrorCode(ErrorCodes.ERROR_CODE);
-			registrationOutput.setErrorMessage("Problem occured during save operation");
+			registrationOutput.setSuccess(false);
+			registrationOutput.setMessage("Problem occured during save operation");
 		}
 
 		return registrationOutput;
