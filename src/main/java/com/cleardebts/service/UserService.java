@@ -1,5 +1,7 @@
 package com.cleardebts.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -73,13 +75,13 @@ public class UserService {
 
 	public UserInput getUserById(Long id) throws RecordNotFoundException {
 
-		User user = userRepository.getOne(id);
+		Optional<User> user = userRepository.findById(id);
 
-		if (user == null) {
+		if (!user.isPresent()) {
 			throw new RecordNotFoundException("User not found exception");
 		}
 
-		return mapModelToUserInput(user);
+		return mapModelToUserInput(user.get());
 	}
 
 	public UserOutputData getUserByUserName(final String userName) throws RecordNotFoundException {

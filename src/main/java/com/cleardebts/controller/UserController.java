@@ -41,7 +41,6 @@ public class UserController {
 
 	@GetMapping("/getUserById/{id}")
 	public ResponseEntity<UserInput> getUser(@PathVariable Long id) throws RecordNotFoundException {
-
 		return ResponseEntity.ok(userService.getUserById(id));
 	}
 
