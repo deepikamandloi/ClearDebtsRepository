@@ -25,6 +25,9 @@ public class JwtUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 
 		User user = userRepository.getUserByContactAndEmail(userName, userName);
+		if(user == null) {
+			throw new UsernameNotFoundException("Invalid username");
+		}
 		return new org.springframework.security.core.userdetails.User(user.getContactNumber(),
 				encoder.encode(user.getPassword()), new ArrayList<>());
 	}
