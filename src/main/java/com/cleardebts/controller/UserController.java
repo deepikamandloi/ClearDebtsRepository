@@ -2,6 +2,8 @@ package com.cleardebts.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +43,7 @@ public class UserController {
 
 	@GetMapping("/getUserById/{id}")
 	public ResponseEntity<UserInput> getUser(@PathVariable Long id) throws RecordNotFoundException {
+		
 		return ResponseEntity.ok(userService.getUserById(id));
 	}
 

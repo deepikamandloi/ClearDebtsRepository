@@ -1,6 +1,6 @@
 package com.cleardebts.frontend.output;
 
-public class TransactionOutput extends TransactionBase {
+public class NewTransactionOutputData {
 
 	private Long id;
 

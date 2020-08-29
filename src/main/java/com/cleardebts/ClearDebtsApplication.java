@@ -13,3 +13,5 @@ public class ClearDebtsApplication {
 	}
 
 }
+//Only related user can update the transaction
+//Only lender or borrower can update specific things

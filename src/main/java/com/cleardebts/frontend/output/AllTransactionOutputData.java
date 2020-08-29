@@ -33,8 +33,5 @@ public class AllTransactionOutputData {
 	public void setTransactions(List<TransactionOutput> transactions) {
 		this.transactions = transactions;
 	}
-	
-	
-	
 
 }

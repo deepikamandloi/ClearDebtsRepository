@@ -35,19 +35,19 @@ public class JwtAuthenticationController {
 	@RequestMapping(value = "/authenticate", method = RequestMethod.POST)
 	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
 
-		UserLoginOutput loginOutput;
+		UserLoginOutput loginOutput = new UserLoginOutput();
 
 		try {
 			authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 			final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
 			final String token = jwtTokenUtil.generateToken(userDetails);
 
-			loginOutput = new UserLoginOutput(token);
 			loginOutput.setSuccess(true);
 			loginOutput.setMessage("Login successfull");
 			loginOutput.setData(userService.getUserByUserName(authenticationRequest.getUsername()));
+			loginOutput.getData().setAuthToken(token);
 		} catch (Exception e) {
-			loginOutput = new UserLoginOutput(null);
+
 			loginOutput.setSuccess(false);
 			loginOutput.setMessage(e.getMessage());
 		}

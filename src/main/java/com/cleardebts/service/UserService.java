@@ -4,11 +4,14 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.cleardebts.exception.ClearDebtsException;
 import com.cleardebts.exception.RecordNotFoundException;
 import com.cleardebts.frontend.input.UserInput;
+import com.cleardebts.frontend.output.UserOutput;
 import com.cleardebts.frontend.output.UserOutputData;
 import com.cleardebts.frontend.output.UserRegistrationOutput;
 import com.cleardebts.model.User;
@@ -93,13 +96,17 @@ public class UserService {
 		}
 
 		UserOutputData data = new UserOutputData();
-		data.setFirstName(user.getFirstName());
-		data.setLastName(user.getLastName());
-		data.setContactNumber(user.getContactNumber());
-		data.setEmail(user.getEmail());
-		data.setCity(user.getCity());
-		data.setCountry(user.getCountry());
-		data.setOsVersion(user.getOsVersion());
+
+		UserOutput userOutput = new UserOutput();
+		userOutput.setFirstName(user.getFirstName());
+		userOutput.setLastName(user.getLastName());
+		userOutput.setContactNumber(user.getContactNumber());
+		userOutput.setEmail(user.getEmail());
+		userOutput.setCity(user.getCity());
+		userOutput.setCountry(user.getCountry());
+		userOutput.setOsVersion(user.getOsVersion());
+
+		data.setUser(userOutput);
 
 		return data;
 	}
@@ -117,5 +124,13 @@ public class UserService {
 		userInput.setPassword(user.getPassword());
 
 		return userInput;
+	}
+
+	public User getCurrentUser() {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String currentPrincipalName = authentication.getName();
+		User user = userRepository.getUserByContactAndEmail(currentPrincipalName, currentPrincipalName);
+		return user;
 	}
 }
