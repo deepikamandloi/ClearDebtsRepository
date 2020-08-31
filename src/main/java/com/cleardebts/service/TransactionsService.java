@@ -5,15 +5,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cleardebts.frontend.input.TransactionInput;
 import com.cleardebts.frontend.output.AllTransactionOutput;
 import com.cleardebts.frontend.output.AllTransactionOutputData;
 import com.cleardebts.frontend.output.NewTransactionOutput;
-import com.cleardebts.frontend.output.NewTransactionOutputData;
-import com.cleardebts.frontend.output.TransactionInput;
 import com.cleardebts.frontend.output.TransactionOutput;
 import com.cleardebts.model.Transaction;
 import com.cleardebts.model.User;
 import com.cleardebts.repository.TransactionRepository;
+import com.cleardebts.util.DateUtil;
 import com.cleardebts.util.ParticipentType;
 import com.cleardebts.util.TransactionStatus;
 import com.cleardebts.util.TransactionType;
@@ -52,8 +52,8 @@ public class TransactionsService {
 
 		Transaction transaction = new Transaction();
 		transaction.setBorrowerContact(transactionInput.getBorrowerContactNumber());
-		transaction.setDescr(transactionInput.getDescr());
-		transaction.setDueDate(transactionInput.getDueDate());
+		transaction.setDescr(transactionInput.getDescription());
+		transaction.setDueDate(DateUtil.getDateFromUnixTimestamp(transactionInput.getDueDate()));
 		transaction.setFromName(transactionInput.getFromName());
 		transaction.setInitiatorUser(userService.getCurrentUser());
 
@@ -68,7 +68,7 @@ public class TransactionsService {
 		transaction.setPendingAmount(transactionInput.getOriginalAmount());
 		transaction.setStatus(TransactionStatus.OPEN.name());
 		transaction.setToName(transactionInput.getToName());
-		transaction.setTransactionDate(transactionInput.getTransactionDate());
+		transaction.setTransactionDate(DateUtil.getDateFromUnixTimestamp(transactionInput.getTransactionDate()));
 		transaction.setType(transactionInput.getType().name());
 
 		return transaction;
@@ -110,7 +110,7 @@ public class TransactionsService {
 
 		TransactionOutput transactionOutput = new TransactionOutput();
 
-		transactionOutput.setDueDate(transaction.getDueDate());
+		transactionOutput.setDueDate(transaction.getDueDate().getTime());
 		transactionOutput.setFromName(transaction.getFromName());
 		transactionOutput.setId(transaction.getId());
 		transactionOutput.setOriginalAmount(transaction.getOriginalAmount());
@@ -123,9 +123,9 @@ public class TransactionsService {
 
 		transactionOutput.setStatus(TransactionStatus.OPEN);
 		transactionOutput.setToName(transaction.getToName());
-		transactionOutput.setTransactionDate(transaction.getTransactionDate());
+		transactionOutput.setTransactionDate(transaction.getTransactionDate().getTime());
 		transactionOutput.setType(TransactionType.valueOf(transaction.getType()));
-		transactionOutput.setDescr(transaction.getDescr());
+		transactionOutput.setDescription(transaction.getDescr());
 
 		transactionOutput.setBorrowerContactNumber(transaction.getBorrowerContact());
 		transactionOutput.setLenderContactNumber(transaction.getLenderContact());

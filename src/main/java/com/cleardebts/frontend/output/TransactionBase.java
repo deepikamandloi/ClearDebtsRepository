@@ -1,15 +1,13 @@
 package com.cleardebts.frontend.output;
 
-import java.util.Date;
-
 import com.cleardebts.util.ParticipentType;
 import com.cleardebts.util.TransactionStatus;
 import com.cleardebts.util.TransactionType;
 
 public class TransactionBase {
 
-	private Date transactionDate = new Date();
-	private Date dueDate = new Date();
+	private Long transactionDate;
+	private Long dueDate;
 	private TransactionType type;
 	private String fromName;
 	private String toName;
@@ -19,21 +17,21 @@ public class TransactionBase {
 	private TransactionStatus status;
 	private String borrowerContactNumber;
 	private String lenderContactNumber;
-	private String descr;
+	private String description;
 
-	public Date getTransactionDate() {
+	public Long getTransactionDate() {
 		return transactionDate;
 	}
 
-	public void setTransactionDate(Date transactionDate) {
+	public void setTransactionDate(Long transactionDate) {
 		this.transactionDate = transactionDate;
 	}
 
-	public Date getDueDate() {
+	public Long getDueDate() {
 		return dueDate;
 	}
 
-	public void setDueDate(Date dueDate) {
+	public void setDueDate(Long dueDate) {
 		this.dueDate = dueDate;
 	}
 
@@ -109,12 +107,12 @@ public class TransactionBase {
 		this.lenderContactNumber = lenderContactNumber;
 	}
 
-	public String getDescr() {
-		return descr;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setDescr(String descr) {
-		this.descr = descr;
+	public void setDescription(String descr) {
+		this.description = descr;
 	}
 
 	

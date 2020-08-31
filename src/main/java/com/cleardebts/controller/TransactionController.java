@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cleardebts.exception.RecordNotFoundException;
+import com.cleardebts.frontend.input.TransactionInput;
 import com.cleardebts.frontend.output.AllTransactionOutput;
 import com.cleardebts.frontend.output.NewTransactionOutput;
-import com.cleardebts.frontend.output.TransactionInput;
 import com.cleardebts.service.TransactionsService;
 
 @Controller
