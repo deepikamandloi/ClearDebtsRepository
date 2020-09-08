@@ -2,18 +2,27 @@ package com.cleardebts.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cleardebts.exception.RecordNotFoundException;
 import com.cleardebts.frontend.input.TransactionInput;
+import com.cleardebts.frontend.input.TransactionRowDetailInput;
+import com.cleardebts.frontend.input.TransactionRowInput;
 import com.cleardebts.frontend.output.AllTransactionOutput;
 import com.cleardebts.frontend.output.AllTransactionOutputData;
+import com.cleardebts.frontend.output.BaseOutput;
 import com.cleardebts.frontend.output.NewTransactionOutput;
 import com.cleardebts.frontend.output.TransactionOutput;
 import com.cleardebts.model.Transaction;
+import com.cleardebts.model.TransactionDetailRow;
 import com.cleardebts.model.User;
 import com.cleardebts.repository.TransactionRepository;
+import com.cleardebts.repository.TransactionRowDetailRepository;
 import com.cleardebts.util.DateUtil;
+import com.cleardebts.util.ErrorCodes;
 import com.cleardebts.util.ParticipentType;
 import com.cleardebts.util.TransactionStatus;
 import com.cleardebts.util.TransactionType;
@@ -26,6 +35,9 @@ public class TransactionsService {
 
 	@Autowired
 	private TransactionRepository transactionRepository;
+
+	@Autowired
+	private TransactionRowDetailRepository rowDetailRepository;
 
 	public NewTransactionOutput createTransaction(TransactionInput transactionInput) {
 
@@ -46,6 +58,57 @@ public class TransactionsService {
 		}
 
 		return newTransactionOutput;
+	}
+
+	// Only a few fields can be updated
+	public NewTransactionOutput updateTransaction(TransactionInput transactionInput) throws RecordNotFoundException {
+
+		NewTransactionOutput newTransactionOutput = new NewTransactionOutput();
+
+		try {
+			Transaction transaction = transactionRepository.getOne(transactionInput.getId());
+
+			if (transaction == null)
+				throw new RecordNotFoundException("Transaction not found");
+
+			transaction.setDescr(transactionInput.getDescription());
+			transaction.setDueDate(DateUtil.getDateFromUnixTimestamp(transactionInput.getDueDate()));
+
+			transactionRepository.save(transaction);
+			newTransactionOutput.getData().setId(transaction.getId());
+			newTransactionOutput.setMessage("Transaction created successfully!!");
+			newTransactionOutput.setSuccess(true);
+		} catch (Exception e) {
+			newTransactionOutput.setMessage("Problem occurred!!");
+			newTransactionOutput.setSuccess(false);
+		}
+
+		return newTransactionOutput;
+	}
+
+	public BaseOutput forceCloseTransaction(Long id) {
+
+		// TODO: It can be deleted by initiator only
+		BaseOutput baseOutput = new BaseOutput();
+		try {
+			Transaction transaction = transactionRepository.getOne(id);
+			if (transaction == null)
+				throw new RecordNotFoundException("Transaction not found");
+
+			transaction.setStatus(TransactionStatus.FORCE_CLOSED.name());
+			transactionRepository.save(transaction);
+
+		} catch (RecordNotFoundException recordNotFoundException) {
+			baseOutput.setErrorCode(ErrorCodes.RECORD_NOT_FOUND_CODE.intValue());
+			baseOutput.setMessage(recordNotFoundException.getMessage());
+			baseOutput.setSuccess(false);
+		} catch (Exception e) {
+			baseOutput.setErrorCode(ErrorCodes.ERROR_CODE.intValue());
+			baseOutput.setMessage("Problem occured");
+			baseOutput.setSuccess(false);
+		}
+		return baseOutput;
+
 	}
 
 	private Transaction mapTransactionInputToModel(TransactionInput transactionInput) {
@@ -114,7 +177,7 @@ public class TransactionsService {
 		transactionOutput.setFromName(transaction.getFromName());
 		transactionOutput.setId(transaction.getId());
 		transactionOutput.setOriginalAmount(transaction.getOriginalAmount());
-		transactionOutput.setPendingAmount(transaction.getOriginalAmount());
+		transactionOutput.setPendingAmount(transaction.getPendingAmount());
 		if (transaction.getIsGroupTransaction()) {
 			transactionOutput.setParticipentType(ParticipentType.GROUP_TRANSACTION);
 		} else {
@@ -131,6 +194,46 @@ public class TransactionsService {
 		transactionOutput.setLenderContactNumber(transaction.getLenderContact());
 
 		return transactionOutput;
+	}
+
+	@Transactional
+	public void addTransactionRow(TransactionRowInput transactionInput) {
+
+		try {
+
+			Transaction transaction = transactionRepository.getOne(transactionInput.getTransactionId());
+
+			Long totalTransAmt = 0L;
+
+			if (transaction == null)
+				throw new RecordNotFoundException();
+
+			if (transactionInput.getRows() != null && !transactionInput.getRows().isEmpty()) {
+				for (TransactionRowDetailInput input : transactionInput.getRows()) {
+
+					TransactionDetailRow detailRow = new TransactionDetailRow();
+					detailRow.setTransaction(transaction);
+					detailRow.setDescrDetails(input.getDescrDetails());
+					detailRow.setPaidAmount(input.getPaidAmount());
+					detailRow.setRowStatus(TransactionStatus.OPEN.name());
+					detailRow.setUpdatedByContactNo(userService.getCurrentUser().getContactNumber());
+					detailRow = rowDetailRepository.save(detailRow);
+					System.out.println("Saved detailRow : "+ detailRow.getId());
+					totalTransAmt = totalTransAmt + input.getPaidAmount();
+
+				}
+			}
+
+			transaction.setPendingAmount(transaction.getPendingAmount() - totalTransAmt);
+			transactionRepository.save(transaction);
+			System.out.println("Saved");
+
+		} catch (RecordNotFoundException recordNotFoundException) {
+			// TODO: handle exception
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
 	}
 
 }

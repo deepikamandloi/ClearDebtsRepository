@@ -2,5 +2,5 @@ package com.cleardebts.util;
 
 public enum TransactionStatus {
 
-	OPEN, CLOSED,REJECTED
+	UNAPPROVED,OPEN, CLOSED,REJECTED,FORCE_CLOSED
 }

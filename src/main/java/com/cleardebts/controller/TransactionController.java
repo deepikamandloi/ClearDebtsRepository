@@ -3,14 +3,19 @@ package com.cleardebts.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.cleardebts.exception.RecordNotFoundException;
 import com.cleardebts.frontend.input.TransactionInput;
+import com.cleardebts.frontend.input.TransactionRowInput;
 import com.cleardebts.frontend.output.AllTransactionOutput;
+import com.cleardebts.frontend.output.BaseOutput;
 import com.cleardebts.frontend.output.NewTransactionOutput;
 import com.cleardebts.service.TransactionsService;
 
@@ -32,63 +37,35 @@ public class TransactionController {
 
 	@GetMapping("/getAllTransactionsForUser/")
 	public ResponseEntity<AllTransactionOutput> getAllTransactionsForUser() throws RecordNotFoundException {
-
 		AllTransactionOutput getAllTransactionOutput = transactionService.getAllOpenTransactionsForUser();
 		return ResponseEntity.ok(getAllTransactionOutput);
 	}
 
-//	private AllTransactionOutput createTempOutput() {
-//
-//		AllTransactionOutput allTransactionOutput = new AllTransactionOutput();
-//		AllTransactionOutputData allTransactionOutputData = new AllTransactionOutputData();
-//
-//		TransactionOutput output1 = new TransactionOutput();
-//		output1.setId(1L);
-////		output1.setAmount(151L);
-//		output1.setDueDate(new Date());
-//		output1.setFromName("Saleel");
-//		output1.setToName("Ashish");
-//		output1.setParticipentType(ParticipentType.INDIVIDUAL_TRANSACTION);
-//		output1.setStatus(TransactionStatus.OPEN);
-//		output1.setTransactionDate(new Date());
-//		output1.setType(TransactionType.TR_LEND);
-//
-//		TransactionOutput output2 = new TransactionOutput();
-//		output2.setId(2L);
-////		output2.setAmount(1001L);
-//		output2.setDueDate(new Date());
-//		output2.setFromName("Saleel");
-//		output2.setToName("Gaurav");
-//		output2.setParticipentType(ParticipentType.INDIVIDUAL_TRANSACTION);
-//		output2.setStatus(TransactionStatus.OPEN);
-//		output2.setTransactionDate(new Date());
-//		output2.setType(TransactionType.TR_BORROW);
-//
-//		TransactionOutput output3 = new TransactionOutput();
-//		output3.setId(3L);
-////		output3.setAmount(551L);
-//		output3.setDueDate(new Date());
-//		output3.setFromName("Saleel");
-//		output3.setToName("Ankush");
-//		output3.setParticipentType(ParticipentType.INDIVIDUAL_TRANSACTION);
-//		output3.setStatus(TransactionStatus.OPEN);
-//		output3.setTransactionDate(new Date());
-//		output3.setType(TransactionType.TR_BORROW);
-//
-//		List<TransactionOutput> transactionOutputs = new ArrayList<TransactionOutput>();
-//		transactionOutputs.add(output1);
-//		transactionOutputs.add(output2);
-//		transactionOutputs.add(output3);
-//
-//		allTransactionOutputData.setTotalAmountBorrowed(1200L);
-//		allTransactionOutputData.setTotalAmountLend(300L);
-//		allTransactionOutputData.setTransactions(transactionOutputs);
-//
-//		allTransactionOutput.setMessage("Success");
-//		allTransactionOutput.setSuccess(true);
-//		allTransactionOutput.setTransactionOutputData(allTransactionOutputData);
-//
-//		return allTransactionOutput;
-//
-//	}
+	@PutMapping("/")
+	public ResponseEntity<NewTransactionOutput> updateTransaction(@RequestBody TransactionInput transactionInput)
+			throws Exception {
+
+		NewTransactionOutput newTransactionOutput = transactionService.updateTransaction(transactionInput);
+
+		return ResponseEntity.ok(newTransactionOutput);
+	}
+
+	@PutMapping("/updateTransactionRow/")
+	public ResponseEntity<BaseOutput> updateTransactionRow(@RequestBody TransactionRowInput rowInput) throws Exception {
+
+		transactionService.addTransactionRow(rowInput);
+		BaseOutput baseOutput = new BaseOutput();
+		baseOutput.setSuccess(true);
+		baseOutput.setMessage("Row added");
+
+		return ResponseEntity.ok(baseOutput);
+
+//		return null
+	}
+
+	@DeleteMapping("/deleteTransactionById/{id}")
+	public ResponseEntity<BaseOutput> deleteTransactionById(@PathVariable Long id) {
+		return ResponseEntity.ok(transactionService.forceCloseTransaction(id));
+	}
+
 }

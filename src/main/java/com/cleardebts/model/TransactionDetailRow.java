@@ -33,6 +33,9 @@ public class TransactionDetailRow {
 	@Column(name = "updated_by_contact_no")
 	private String updatedByContactNo;
 
+	@Column(name = "row_status")
+	private String rowStatus;
+
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "transaction_id", nullable = false)
 	private Transaction transaction;
@@ -84,5 +87,15 @@ public class TransactionDetailRow {
 	public void setUpdatedByContactNo(String updatedByContactNo) {
 		this.updatedByContactNo = updatedByContactNo;
 	}
+
+	public String getRowStatus() {
+		return rowStatus;
+	}
+
+	public void setRowStatus(String rowStatus) {
+		this.rowStatus = rowStatus;
+	}
+	
+	
 
 }
