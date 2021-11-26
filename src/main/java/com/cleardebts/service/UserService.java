@@ -4,8 +4,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.cleardebts.exception.ClearDebtsException;
@@ -126,11 +124,4 @@ public class UserService {
 		return userInput;
 	}
 
-	public User getCurrentUser() {
-
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String currentPrincipalName = authentication.getName();
-		User user = userRepository.getUserByContactAndEmail(currentPrincipalName, currentPrincipalName);
-		return user;
-	}
 }

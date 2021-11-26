@@ -118,7 +118,6 @@ public class TransactionsService {
 		transaction.setDescr(transactionInput.getDescription());
 		transaction.setDueDate(DateUtil.getDateFromUnixTimestamp(transactionInput.getDueDate()));
 		transaction.setFromName(transactionInput.getFromName());
-		transaction.setInitiatorUser(userService.getCurrentUser());
 
 		if (transactionInput.getParticipentType().equals(ParticipentType.GROUP_TRANSACTION)) {
 			transaction.setIsGroupTransaction(true);
@@ -145,7 +144,7 @@ public class TransactionsService {
 		Long totalAmountBorrowed = 0L;
 		Long totalAmountLend = 0L;
 
-		User user = userService.getCurrentUser();
+		User user = null; //userService.getCurrentUser();
 
 		List<Transaction> openTransactions = transactionRepository.getOpenTransactionForUser(user.getContactNumber(),
 				TransactionStatus.OPEN.name());
@@ -216,7 +215,7 @@ public class TransactionsService {
 					detailRow.setDescrDetails(input.getDescrDetails());
 					detailRow.setPaidAmount(input.getPaidAmount());
 					detailRow.setRowStatus(TransactionStatus.OPEN.name());
-					detailRow.setUpdatedByContactNo(userService.getCurrentUser().getContactNumber());
+					detailRow.setUpdatedByContactNo("");
 					detailRow = rowDetailRepository.save(detailRow);
 					System.out.println("Saved detailRow : "+ detailRow.getId());
 					totalTransAmt = totalTransAmt + input.getPaidAmount();
