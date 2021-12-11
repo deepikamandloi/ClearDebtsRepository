@@ -47,6 +47,23 @@ public class ChemicalAppService {
 		return rawItem;
 	}
 
+	public RawItem updateItem(RawItem rawItem) throws Exception {
+
+		try {
+			getItemBy(rawItem.getId());
+			rawItem = itemRepo.save(rawItem);
+
+			System.out.println("Item updated successfully");
+
+			// TODO Handle excepion for all the cases
+		} catch (Exception exception) {
+			System.out.println("Item fail to update");
+			throw exception;
+		}
+
+		return rawItem;
+	}
+
 	public RawItem getItemBy(Long id) throws RecordNotFoundException {
 
 		Optional<RawItem> rawItem = itemRepo.findById(id);
@@ -94,6 +111,23 @@ public class ChemicalAppService {
 
 		return chemicalFormula;
 	}
+	
+	public ChemicalFormula updateFormula(ChemicalFormula chemicalFormula) throws Exception {
+
+		try {
+			getFormulaBy(chemicalFormula.getId());
+			chemicalFormula = chemicalFormulaRepo.save(chemicalFormula);
+
+			System.out.println("Formula updated successfully");
+
+			// TODO Handle excepion for all the cases
+		} catch (Exception exception) {
+			System.out.println("Formula fail to update");
+			throw exception;
+		}
+
+		return chemicalFormula;
+	}
 
 	public ChemicalFormula getFormulaBy(Long id) throws RecordNotFoundException {
 
@@ -111,7 +145,7 @@ public class ChemicalAppService {
 
 		ChemicalFormula chemicalFormula = getFormulaBy(formulaId);
 
-		Long proportion = weight / 100;
+		Double proportion = ((double)weight/100);
 
 		List<ItemWeight> itemWeightList = new ArrayList<ItemWeight>();
 
@@ -125,7 +159,7 @@ public class ChemicalAppService {
 			ItemWeight itemWeight = new ItemWeight();
 			itemWeight.setId(Long.valueOf(itemWeightSplit[0]));
 			RawItem rawItem = getItemBy(itemWeight.getId());
-			itemWeight.setWeight(Long.valueOf(itemWeightSplit[1]) * proportion);
+			itemWeight.setWeight(Double.valueOf(itemWeightSplit[1]) * proportion);
 			itemWeight.setDescr(rawItem.getName());
 			itemWeightList.add(itemWeight);
 		}
@@ -191,6 +225,21 @@ public class ChemicalAppService {
 
 	public List<Order> getAllOrders() throws RecordNotFoundException {
 		return orderRepo.findAll();
+	}
+	
+	public Order updateOrder(OrderInput orderInput) throws Exception {
+		Order order = null;
+		try {
+			getOrderBy(orderInput.getId());
+			createOrder(orderInput);
+			System.out.println("Order updated successfully");
+
+			// TODO Handle excepion for all the cases
+		} catch (Exception exception) {
+			System.out.println("Order fail to update");
+			throw exception;
+		}
+		return order;
 	}
 
 	public void deleteOrderById(Long id) throws RecordNotFoundException {

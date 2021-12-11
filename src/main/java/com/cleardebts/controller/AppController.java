@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -39,6 +40,14 @@ public class AppController {
 		return ResponseEntity.ok(item);
 	}
 
+	@PutMapping("/item/")
+	public ResponseEntity<RawItem> updateItem(@RequestBody RawItem item) throws Exception {
+
+		item = appService.updateItem(item);
+
+		return ResponseEntity.ok(item);
+	}
+
 	@GetMapping("/item/getItemById/{id}")
 	public ResponseEntity<RawItem> getItemById(@PathVariable Long id) throws RecordNotFoundException {
 
@@ -62,6 +71,20 @@ public class AppController {
 		} catch (ClearDebtsException cde) {
 		}
 		return ResponseEntity.ok(chemicalFormula);
+	}
+	
+	@PutMapping("/formula/")
+	public ResponseEntity<ChemicalFormula> updateFormula(@RequestBody ChemicalFormula chemicalFormula) throws Exception {
+
+		chemicalFormula = appService.updateFormula(chemicalFormula);
+
+		return ResponseEntity.ok(chemicalFormula);
+	}
+
+	@GetMapping("/formula/getAllFormulas")
+	public ResponseEntity<List<ChemicalFormula>> getAllFormulas() throws RecordNotFoundException {
+
+		return ResponseEntity.ok(appService.getAllFormulas());
 	}
 
 	@GetMapping("/formula/getFormulaById/{id}")

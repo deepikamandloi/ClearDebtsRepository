@@ -4,17 +4,17 @@ public class ItemWeight {
 	
 	private Long id;
 	private String descr;
-	private Long weight;
+	private Double weight;
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Long getWeight() {
+	public Double getWeight() {
 		return weight;
 	}
-	public void setWeight(Long weight) {
+	public void setWeight(Double weight) {
 		this.weight = weight;
 	}
 	public String getDescr() {

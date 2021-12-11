@@ -20,7 +20,7 @@ public class RawItem {
 	private String name;
 
 	@Column(name = "stock")
-	private Long stock;
+	private Double stock;
 
 	public Long getId() {
 		return id;
@@ -38,11 +38,11 @@ public class RawItem {
 		this.name = name;
 	}
 
-	public Long getStock() {
+	public Double getStock() {
 		return stock;
 	}
 
-	public void setStock(Long stock) {
+	public void setStock(Double stock) {
 		this.stock = stock;
 	}
 
